@@ -60,17 +60,71 @@
             display:block;
             width:100px;
         }
-        #rate{
+        .rate{
             color : blue;
         }
-        #date{
-            color : gray;
+        .date{
+            color : purple;
+        }
+        .table{
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+
+        }
+        .order_list{
+            text-align: center;
+            margin : 40px auto 0 auto;
+            font-weight: bold;
         }
     </style>
     <script>
         $(document).ready(function(){
 	        rate();
-        });
+	        viewOrder()
+        })
+
+        function order(){
+            let name = $('#name').val();
+            let quantity = $('#quantity').val();
+            let address = $('#address').val();
+            let phone = $('#phone').val();
+
+            $.ajax({
+                    type: "POST",
+                    url: "/order",
+                    data: {name_give:name,quantity_give:quantity,address_give:address,phone_give:phone},
+                    success: function (response){
+                        alert(response["msg"]);
+                        window.location.reload()
+                    }
+                })
+        }
+
+        function viewOrder(){
+            $.ajax({
+                    type: "GET",
+                    url: "/order",
+                    data: {},
+                    success: function (response){
+                        let orders = response['All_orders']
+                        for(i=0; i<order.length; i++){
+                            let name = orders[i]['name']
+                            let quantity = orders[i]['quantity']
+                            let address = orders[i]['address']
+                            let phone = orders[i]['phone']
+                            let temp_html = `<tr>
+                                                <th>${name}</th>
+                                                <th>${quantity}</th>
+                                                <th>${address}</th>
+                                                <th>${phone}</th>
+                                            </tr>`
+                            $('#tbody').append(temp_html)
+                        }
+
+                    }
+                })
+        }
         function rate(){
             $.ajax({
                     type: "GET",
@@ -80,28 +134,28 @@
                         let rates = response['rate'];
                         let dates = response['date'];
                         let temp_html = ""
-                        temp_html =`<span ready="rate()" id="rate">${rates+'원'}</span>
-                        <span ready="date" id="date">${dates}</span>`
+                        temp_html =`<span class="rate">${rates+'원'}</span>
+                        <span class="date">(${dates})</span>`
                         $('#rate').append(temp_html)
                     }
                 })
         }
-        function order(){
-                alert('주문이 완료되었습니다');
-            }
+
     </script>
 </head>
 
 <body>
     <div class="all">
-    <img class="img" src="data:image/jpeg;base64,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"></img>
+    <img class="img" src="data:image/jpeg;base64,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">
+
+    </img>
     <h1>로지텍 G304 <span class ="price">가격 35,000원/개</span></h1>
     이 상품으로 말할것 같으면 무선 게이밍 마우스 중 가장 가성비로 알려져있음.
-    <div>달러-원 환율:<span ready="rate()" id="rate"></span><span ready="date" id="date"></span></div>
+    <div>달러-원 환율:<span id="rate"></span>
     <h2>주문하기</h2>
-    <p><span class="subject name">주문자 성함: </span><input type="text" class="text"/></p>
+    <p><span class="subject name">주문자 성함: </span><input type="text" class="text" id = "name"/></p>
     <p><span class="subject number">수량: </span>
-        <select name="quantity" class="quantity">
+        <select name="quantity" class="quantity" id = "quantity">
             <option value="quantity">수량을 선택하세요</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -111,9 +165,22 @@
             <option value="6">6</option>
         </select>
     </p>
-    <p><span class="subject adress">주소: </span><input type="text" class="text"/></p>
-    <p><span class="subject phone">전화번호: </span><input type="text" class="text"/></p>
+    <p><span class="subject adress" >주소: </span><input type="text" class="text" id = "address"/></p>
+    <p><span class="subject phone" >전화번호: </span><input type="text" class="text" id = "phone"/></p>
     <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
+    </div>
+        <div class="order_list">주문내역</div>
+        <table class ="table">
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>수량</th>
+                    <th>주소</th>
+                    <th>전화번호</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
     </div>
 </body>
 
