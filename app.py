@@ -5,12 +5,11 @@ app = Flask(__name__)
 from pymongo import MongoClient
 
 client = MongoClient('localhost', 27017)
-db = client.dbhomework
-
+db = client.dbsparta
 
 ## HTML 화면 보여주기
 @app.route('/')
-def homework():
+def index():
     return render_template('index.html')
 
 
@@ -22,12 +21,7 @@ def order():
     address_receive = request.form['address_give']
     phone_receive = request.form['phone_give']
 
-    doc = {
-        'name': name_receive,
-        'quantity': quantity_receive,
-        'address': address_receive,
-        'phone': phone_receive
-    }
+    doc = {'name': name_receive,'quantity': quantity_receive,'address': address_receive,'phone': phone_receive}
 
     db.shopping.insert_one(doc)
     return jsonify({'msg': '주문 완료!'})
@@ -37,7 +31,7 @@ def order():
 @app.route('/order', methods=['GET'])
 def view_orders():
     orders = list(db.shopping.find({},{'_id':False}))
-    return jsonify({'All_orders': orders})
+    return jsonify({'view_orders': orders})
 
 
 if __name__ == '__main__':

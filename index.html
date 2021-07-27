@@ -81,7 +81,7 @@
     <script>
         $(document).ready(function(){
 	        rate();
-	        viewOrder()
+	        viewOrder();
         })
 
         function order(){
@@ -107,21 +107,22 @@
                     url: "/order",
                     data: {},
                     success: function (response){
-                        let orders = response['All_orders']
-                        for(i=0; i<order.length; i++){
+                        let orders = response['view_orders']
+                        for(let i=0; i<orders.length; i++){
                             let name = orders[i]['name']
                             let quantity = orders[i]['quantity']
                             let address = orders[i]['address']
                             let phone = orders[i]['phone']
-                            let temp_html = `<tr>
-                                                <th>${name}</th>
-                                                <th>${quantity}</th>
-                                                <th>${address}</th>
-                                                <th>${phone}</th>
-                                            </tr>`
-                            $('#tbody').append(temp_html)
+                            let temp_html = `<tbody>
+                                                <tr>
+                                                    <th>${name}</th>
+                                                    <th>${quantity}</th>
+                                                    <th>${address}</th>
+                                                    <th>${phone}</th>
+                                                </tr>
+                                            </tbody>`
+                            $('#tablehead').append(temp_html)
                         }
-
                     }
                 })
         }
@@ -133,8 +134,7 @@
                     success: function (response){
                         let rates = response['rate'];
                         let dates = response['date'];
-                        let temp_html = ""
-                        temp_html =`<span class="rate">${rates+'원'}</span>
+                        let temp_html =`<span class="rate">${rates+'원'}</span>
                         <span class="date">(${dates})</span>`
                         $('#rate').append(temp_html)
                     }
@@ -170,7 +170,7 @@
     <button onclick="order()" type="button" class="btn btn-primary">주문하기</button>
     </div>
         <div class="order_list">주문내역</div>
-        <table class ="table">
+        <table class ="table" id ="tablehead">
             <thead>
                 <tr>
                     <th>이름</th>
@@ -179,7 +179,6 @@
                     <th>전화번호</th>
                 </tr>
             </thead>
-            <tbody id="tbody"></tbody>
         </table>
     </div>
 </body>
